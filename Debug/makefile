@@ -32,6 +32,9 @@ endif
 LSS += \
 GPIO_Challenge.lss \
 
+FLASH_IMAGE += \
+GPIO_Challenge.hex \
+
 SIZEDUMMY += \
 sizedummy \
 
@@ -53,6 +56,12 @@ GPIO_Challenge.lss: GPIO_Challenge.elf
 	@echo 'Finished building: $@'
 	@echo ' '
 
+GPIO_Challenge.hex: GPIO_Challenge.elf
+	@echo 'Create Flash image (ihex format)'
+	-avr-objcopy -R .eeprom -R .fuse -R .lock -R .signature -O ihex GPIO_Challenge.elf  "GPIO_Challenge.hex"
+	@echo 'Finished building: $@'
+	@echo ' '
+
 sizedummy: GPIO_Challenge.elf
 	@echo 'Invoking: Print Size'
 	-avr-size --format=avr --mcu=atmega16 GPIO_Challenge.elf
@@ -61,10 +70,10 @@ sizedummy: GPIO_Challenge.elf
 
 # Other Targets
 clean:
-	-$(RM) $(ELFS)$(OBJS)$(ASM_DEPS)$(S_DEPS)$(SIZEDUMMY)$(S_UPPER_DEPS)$(LSS)$(C_DEPS) GPIO_Challenge.elf
+	-$(RM) $(FLASH_IMAGE)$(ELFS)$(OBJS)$(ASM_DEPS)$(S_DEPS)$(SIZEDUMMY)$(S_UPPER_DEPS)$(LSS)$(C_DEPS) GPIO_Challenge.elf
 	-@echo ' '
 
-secondary-outputs: $(LSS) $(SIZEDUMMY)
+secondary-outputs: $(LSS) $(FLASH_IMAGE) $(SIZEDUMMY)
 
 .PHONY: all clean dependents
 

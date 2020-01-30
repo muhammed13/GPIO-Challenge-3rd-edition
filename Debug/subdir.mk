@@ -4,10 +4,15 @@
 
 # Add inputs and outputs from these tool invocations to the build variables 
 C_SRCS += \
+../AGILE_REQ2.c \
+../AGILE_REQ3.c \
 ../GPIO_REQ15.c \
 ../GPIO_REQ7.c \
 ../GPIO_REQ8.c \
 ../GPIO_REQ9.c \
+../ISRs.c \
+../SwICU.c \
+../US.c \
 ../dcMotor.c \
 ../gpio.c \
 ../interrupt.c \
@@ -19,10 +24,15 @@ C_SRCS += \
 ../timers.c 
 
 OBJS += \
+./AGILE_REQ2.o \
+./AGILE_REQ3.o \
 ./GPIO_REQ15.o \
 ./GPIO_REQ7.o \
 ./GPIO_REQ8.o \
 ./GPIO_REQ9.o \
+./ISRs.o \
+./SwICU.o \
+./US.o \
 ./dcMotor.o \
 ./gpio.o \
 ./interrupt.o \
@@ -34,10 +44,15 @@ OBJS += \
 ./timers.o 
 
 C_DEPS += \
+./AGILE_REQ2.d \
+./AGILE_REQ3.d \
 ./GPIO_REQ15.d \
 ./GPIO_REQ7.d \
 ./GPIO_REQ8.d \
 ./GPIO_REQ9.d \
+./ISRs.d \
+./SwICU.d \
+./US.d \
 ./dcMotor.d \
 ./gpio.d \
 ./interrupt.d \

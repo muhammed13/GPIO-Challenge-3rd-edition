@@ -1,10 +1,10 @@
 #include "GPIO_REQ9.h"
-void trafficlight()
+void trafficlight(void)
 {
 	Led_Init(LED_1);
 	Led_Init(LED_2);
 	Led_Init(LED_3);
-	uint8_t state=GO_;
+	en_STATE state=GO_;
 	while(TRUE)
 	{
 		switch(state)
@@ -32,12 +32,12 @@ void trafficlight()
 	}
 }
 
-void trafficlight_using_timer0()
+void trafficlight_using_timer0(void)
 {
 	Led_Init(LED_1);
 	Led_Init(LED_2);
 	Led_Init(LED_3);
-	uint8_t state=GO_;
+	en_STATE state=GO_;
 	while(TRUE)
 	{
 		switch(state)
@@ -66,12 +66,12 @@ void trafficlight_using_timer0()
 }
 
 
-void trafficlight_using_timer1()
+void trafficlight_using_timer1(void)
 {
 	Led_Init(LED_1);
 	Led_Init(LED_2);
 	Led_Init(LED_3);
-	uint8_t state=GO_;
+	en_STATE state=GO_;
 	while(TRUE)
 	{
 		switch(state)
@@ -100,8 +100,9 @@ void trafficlight_using_timer1()
 }
 
 
-void trafficlight_using_timer0_using_interrupts()
+void trafficlight_using_timer0_using_interrupts(void)
 {
+	sei();
 	Led_Init(LED_1);
 	Led_Init(LED_2);
 	Led_Init(LED_3);
@@ -114,19 +115,21 @@ void trafficlight_using_timer0_using_interrupts()
 }
 
 
-void trafficlight_using_timer0_using_interrupts_button()
+void trafficlight_using_timer0_using_interrupts_button(void)
 {
+	sei();
+	INT0_Init(RISIGING_EDGE);
 	Led_Init(LED_1);
 	Led_Init(LED_2);
 	Led_Init(LED_3);
 	pushButtonInit(BTN_4_INT0);
 	while(TRUE)
 	{
-		if(g8_interrupt_zero_flag==1)
+		if(g8_gloabal_int0_flag==1)
 		{
 		    g8_state=STOP_;
 			timer0Init(T0_COMP_MODE,T0_OC0_DIS,T0_PRESCALER_64,0,MS_OCR_value,T0_INTERRUPT_CMP);
-			g8_interrupt_zero_flag=0;
+			g8_gloabal_int0_flag=0;
 		}
 	}
 }

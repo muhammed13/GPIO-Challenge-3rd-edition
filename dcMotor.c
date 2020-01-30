@@ -99,11 +99,11 @@ void MotorDC_Dir(En_motorType_t en_motor_number, En_motorDir_t en_motor_dir)
 
 void MotorDC_Speed_PollingWithT0(uint8_t u8_motor_speed)
 {
-	timer0SwPWM(u8_motor_speed,100);
+	timer0SwPWM(u8_motor_speed,T0_FREQUENCY_61HZ);
 }
 
 
 void MotorDC_Speed_HwPWM(uint8_t u8_motor_speed)
 {
-
+	timer1HwPWM_PhaseCorrect(u8_motor_speed,T1_PHASE_CORRECT_FREQUENCY_400HZ);
 }

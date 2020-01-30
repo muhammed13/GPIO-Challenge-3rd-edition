@@ -1,8 +1,21 @@
 #include "timers.h"
-
-volatile uint8_t g8_on_time;
-volatile uint8_t g8_off_time;
+uint8_t g8_TCNT0_value_Swpwm_ISR;
 #define TIMER_ICR1_TOP_VALUE 2499
+/*************************************************************************
+* Function Name: Dio_Init
+* Sync/Async: Synchronous
+* Reentrancy: reentrant
+* Parameters (in): en_mode - Enum value to define the timer mode
+*                  en_OC0 -
+*                  en_prescal -
+*                  u8_initialValue -
+*                  u8_outputCompare -
+*                  en_interruptMask -
+* Parameters (inout): None
+* Parameters (out): None
+* Return value: None
+* Description:
+* ***********************************************************************/
 void timer0Init(En_timer0Mode_t en_mode,En_timer0OC_t en_OC0,
 		En_timer0perscaler_t en_prescal, uint8_t u8_initialValue,
 		uint8_t u8_outputCompare, En_timer0Interrupt_t en_interruptMask)
@@ -104,7 +117,7 @@ void timer0DelayUs(uint32_t u32_delay_in_us)
  * in this function the PWM generated using the fast PWM mode
  * the user has to choose one of the defined frequencies
  */
-
+/******************************fast correct******************************/
 void timer0HwPWM(uint8_t u8_dutyCycle,uint8_t u8_frequency)
 {
 	TCNT0 = 0; /*timer initial value*/
@@ -133,7 +146,7 @@ void timer0HwPWM(uint8_t u8_dutyCycle,uint8_t u8_frequency)
 			TCCR0 =T0_PRESCALER_8 | (1<<COM01)| (1<<WGM00) | (1<<WGM01);
 			break;
 
-	case(T0_FREQUENCY_967HZ):
+	case(T0_FREQUENCY_1KHZ):
 			/* Configure the timer control register
 			 * 1. PWM mode FOC0=0
 			 * 2. fast PWM mode WGM01=1 & WGM00=1
@@ -165,10 +178,90 @@ void timer0HwPWM(uint8_t u8_dutyCycle,uint8_t u8_frequency)
 	}
 }
 
+/******************************fast correct******************************/
+void timer0HwPWM_PhaseCorrect(uint8_t u8_dutyCycle,uint8_t u8_frequency)
+{
+	TCNT0 = 0; /*timer initial value*/
+	TIMSK = 0; /*disable interrupts*/
+	OCR0 = (u8_dutyCycle*TIMER0_NUMBER_OF_TICKS)/100; /*output compare value*/
+
+	switch(u8_frequency)
+	{
+	case(T0_PHASE_CORRECT_FREQUENCY_31KHZ):
+			/* Configure the timer control register
+			 * 1. PWM mode FOC0=0
+			 * 2. phase correct PWM mode WGM01=0 & WGM00=1
+			 * 3. clear OC0 on compare match COM00=0 & COM01=1
+			 * 4. clock = F_CPU CS00=1 CS01=0 CS02=0
+			 */
+			TCCR0 =T0_PRESCALER_NO | (1<<COM01)| (1<<WGM00);
+			break;
+
+	case(T0_PHASE_CORRECT_FREQUENCY_4KHZ):
+			/* Configure the timer control register
+			 * 1. PWM mode FOC0=0
+			 * 2. phase correct PWM mode WGM01=0 & WGM00=1
+			 * 3. clear OC0 on compare match COM00=0 & COM01=1
+			 * 4. clock = F_CPU/8 CS00=1 CS01=0 CS02=0
+			 */
+			TCCR0 =T0_PRESCALER_8 | (1<<COM01)| (1<<WGM00);
+			break;
+
+	case(T0_PHASE_CORRECT_FREQUENCY_500HZ):
+			/* Configure the timer control register
+			 * 1. PWM mode FOC0=0
+			 * 2. phase correct PWM mode WGM01=0 & WGM00=1
+			 * 3. clear OC0 on compare match COM00=0 & COM01=1
+			 * 4. clock = F_CPU/64 CS00=1 CS01=1 CS02=0
+			 */
+			TCCR0 =T0_PRESCALER_64 | (1<<COM01)| (1<<WGM00);
+			break;
+
+	case(T0_PHASE_CORRECT_FREQUENCY_122HZ):
+			/* Configure the timer control register
+			 * 1. PWM mode FOC0=0
+			 * 2. phase correct PWM mode WGM01=0 & WGM00=1
+			 * 3. clear OC0 on compare match COM00=0 & COM01=1
+			 * 4. clock = F_CPU/256 CS00=0 CS01=0 CS02=1
+			 */
+			TCCR0 =T0_PRESCALER_256 | (1<<COM01)| (1<<WGM00);
+			break;
+
+	case(T0_PHASE_CORRECT_FREQUENCY_31HZ):
+			/* Configure the timer control register
+			 * 1. PWM mode FOC0=0
+			 * 2. phase correct PWM mode WGM01=0 & WGM00=1
+			 * 3. clear OC0 on compare match COM00=0 & COM01=1
+			 * 4. clock = F_CPU/1024 CS00=1 CS01=0 CS02=1
+			 */
+			TCCR0 =T0_PRESCALER_1024 | (1<<COM01)| (1<<WGM00);
+			break;
+	}
+}
+
 void timer0SwPWM(uint8_t u8_dutyCycle,uint8_t u8_frequency)
 {
-	uint8_t OCR0_TEMP=(u8_dutyCycle)*(156/100.0)+100;
-	timer0Init(T0_NORMAL_MODE,T0_OC0_DIS,T0_PRESCALER_1024,6,OCR0_TEMP,T0_INTERRUPT_NORMAL|T0_INTERRUPT_CMP);
+	uint8_t TCNT0_TEMP;
+	uint8_t OCR0_TEMP;
+	if(u8_dutyCycle==100)  /*this if statement because at 100% duty cycle the */
+	{                      /*TCNT0 will equal OCR0 and the OVF interrupt will be*/
+		u8_dutyCycle=99;   /*executed first then the COMP ISR, so this will generate*/
+	}                      /*a 0% duty cycle instead of 100%*/
+	switch(u8_frequency)
+	{
+	case T0_FREQUENCY_1KHZ:
+			TCNT0_TEMP=6;
+			OCR0_TEMP=(u8_dutyCycle)*(250/100.0)+6;
+			timer0Init(T0_NORMAL_MODE,T0_OC0_DIS,T0_PRESCALER_64,TCNT0_TEMP,OCR0_TEMP,T0_INTERRUPT_NORMAL|T0_INTERRUPT_CMP);
+			break;
+
+	case T0_FREQUENCY_61HZ:
+			TCNT0_TEMP=0;
+			OCR0_TEMP=(u8_dutyCycle)*(256/100.0);
+			timer0Init(T0_NORMAL_MODE,T0_OC0_DIS,T0_PRESCALER_1024,TCNT0_TEMP,OCR0_TEMP,T0_INTERRUPT_NORMAL|T0_INTERRUPT_CMP);
+			break;
+	}
+	g8_TCNT0_value_Swpwm_ISR=TCNT0_TEMP;
 }
 /*==============================Timer1===============================*/
 
@@ -301,7 +394,7 @@ void timer1DelayUs(uint32_t u32_delay_in_us)
 /*
  * in this function a PWM signal is generated using mode number 14 (fast PWM ICR1 TOP)
  */
-void timer1SwPWM(uint8_t u8_dutyCycle,uint8_t u8_frequency)
+void timer1HwPWM(uint8_t u8_dutyCycle,uint8_t u8_frequency)
 {
 	TCNT1 = 0; /*timer initial value*/
 	TIMSK = 0; /*disable interrupts*/
@@ -393,6 +486,107 @@ void timer1SwPWM(uint8_t u8_dutyCycle,uint8_t u8_frequency)
 			 * 2. Prescaler = F_CPU/1024
 			 */
 			TCCR1B = (1<<WGM12) | (1<<WGM13) | T1_PRESCALER_1024;
+			break;
+	}
+}
+
+
+/*
+ * in this function a PWM signal is generated using mode number 10 (phase correct PWM ICR1 TOP)
+ */
+void timer1HwPWM_PhaseCorrect(uint8_t u8_dutyCycle,uint8_t u8_frequency)
+{
+	TCNT1 = 0; /*timer initial value*/
+	TIMSK = 0; /*disable interrupts*/
+	OCR1A = (u8_dutyCycle)*(TIMER_ICR1_TOP_VALUE/100);   /*output compare value*/
+	OCR1B = (u8_dutyCycle)*(TIMER_ICR1_TOP_VALUE/100);   /*output compare value*/
+
+	switch(u8_frequency)
+	{
+
+	case(T1_PHASE_CORRECT_FREQUENCY_3KHZ):
+			ICR1 = TIMER_ICR1_TOP_VALUE;	/* Set TOP count for timer1 in ICR1 register */
+			/* Configure timer control register TCCR1A
+			 * 1. Clear OC1A on compare match (non inverting mode) COM1A1=1 COM1A0=0
+			 * 2. Disconnect OC1B COM1B0=0 COM1B1=0
+			 * 3. FOC1A=0 FOC1B=0 because these bits are only active in case non-pwm mode
+			 * 4. Fast Pwm Mode with the TOP in ICR1 WGM10=0 WGM11=1 (Mode Number 14)
+			 */
+			TCCR1A = (1<<WGM11) | (1<<COM1A1);
+
+			/* Configure timer control register TCCR1A
+			 * 1. phase correct Pwm Mode with the TOP in ICR1 WGM12=0 WGM13=1 (Mode Number 10)
+			 * 2. Prescaler = F_CPU
+			 */
+			TCCR1B =(1<<WGM13) | T1_PRESCALER_NO;
+			break;
+
+	case(T1_PHASE_CORRECT_FREQUENCY_400HZ):
+			ICR1 = TIMER_ICR1_TOP_VALUE;	/* Set TOP count for timer1 in ICR1 register */
+			/* Configure timer control register TCCR1A
+			 * 1. Clear OC1A on compare match (non inverting mode) COM1A1=1 COM1A0=0
+			 * 2. Disconnect OC1B COM1B0=0 COM1B1=0
+			 * 3. FOC1A=0 FOC1B=0 because these bits are only active in case non-pwm mode
+			 * 4. Fast Pwm Mode with the TOP in ICR1 WGM10=0 WGM11=1 (Mode Number 14)
+			 */
+			TCCR1A = (1<<WGM11) | (1<<COM1A1);
+
+			/* Configure timer control register TCCR1A
+			 * 1. Fast Pwm Mode with the TOP in ICR1 WGM12=1 WGM13=1 (Mode Number 14)
+			 * 2. Prescaler = F_CPU/8
+			 */
+			TCCR1B = (1<<WGM13) | T1_PRESCALER_8;
+			break;
+
+	case(T1_PHASE_CORRECT_FREQUENCY_50HZ):
+			ICR1 = TIMER_ICR1_TOP_VALUE;	/* Set TOP count for timer1 in ICR1 register */
+			/* Configure timer control register TCCR1A
+			 * 1. Clear OC1A on compare match (non inverting mode) COM1A1=1 COM1A0=0
+			 * 2. Disconnect OC1B COM1B0=0 COM1B1=0
+			 * 3. FOC1A=0 FOC1B=0 because these bits are only active in case non-pwm mode
+			 * 4. Fast Pwm Mode with the TOP in ICR1 WGM10=0 WGM11=1 (Mode Number 14)
+			 */
+			TCCR1A = (1<<WGM11) | (1<<COM1A1);
+
+			/* Configure timer control register TCCR1A
+			 * 1. Fast Pwm Mode with the TOP in ICR1 WGM12=1 WGM13=1 (Mode Number 14)
+			 * 2. Prescaler = F_CPU/64
+			 */
+			TCCR1B =(1<<WGM13) | T1_PRESCALER_64;
+			break;
+
+	case(T1_PHASE_CORRECT_FREQUENCY_13HZ):  //90hz
+			ICR1 = TIMER_ICR1_TOP_VALUE;	/* Set TOP count for timer1 in ICR1 register */
+			/* Configure timer control register TCCR1A
+		     * 1. Clear OC1A on compare match (non inverting mode) COM1A1=1 COM1A0=0
+		     * 2. Disconnect OC1B COM1B0=0 COM1B1=0
+		     * 3. FOC1A=0 FOC1B=0 because these bits are only active in case non-pwm mode
+		     * 4. Fast Pwm Mode with the TOP in ICR1 WGM10=0 WGM11=1 (Mode Number 14)
+			 */
+			TCCR1A = (1<<WGM11) | (1<<COM1A1);
+
+			/* Configure timer control register TCCR1A
+			 * 1. Fast Pwm Mode with the TOP in ICR1 WGM12=1 WGM13=1 (Mode Number 14)
+			 * 2. Prescaler = F_CPU/256
+		     */
+			TCCR1B =(1<<WGM13) | T1_PRESCALER_256;
+			break;
+
+	case(T1_PHASE_CORRECT_FREQUENCY_3HZ):
+			ICR1 = TIMER_ICR1_TOP_VALUE;	/* Set TOP count for timer1 in ICR1 register */
+			/* Configure timer control register TCCR1A
+			 * 1. Clear OC1A on compare match (non inverting mode) COM1A1=1 COM1A0=0
+			 * 2. Disconnect OC1B COM1B0=0 COM1B1=0
+			 * 3. FOC1A=0 FOC1B=0 because these bits are only active in case non-pwm mode
+			 * 4. Fast Pwm Mode with the TOP in ICR1 WGM10=0 WGM11=1 (Mode Number 14)
+			 */
+			TCCR1A = (1<<WGM11) | (1<<COM1A1);
+
+			/* Configure timer control register TCCR1A
+			 * 1. Fast Pwm Mode with the TOP in ICR1 WGM12=1 WGM13=1 (Mode Number 14)
+			 * 2. Prescaler = F_CPU/1024
+			 */
+			TCCR1B =(1<<WGM13) | T1_PRESCALER_1024;
 			break;
 	}
 }

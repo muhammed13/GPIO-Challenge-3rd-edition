@@ -5,6 +5,7 @@
 #include "led.h"
 #include "softwareDelay.h"
 #include "interrupt.h"
+#include "ISRs.h"
 #include "pushButton.h"
 
 #ifndef ONE_SEC_
@@ -15,22 +16,22 @@
 #define START 0
 #endif
 
-typedef enum STATE
+typedef enum en_STATE
 {
 	GO_=1,
 	READY_=2,
 	STOP_=3,
-}STATE;
+}en_STATE;
 
-void trafficlight();
+void trafficlight(void);
 
-void trafficlight_using_timer0();
+void trafficlight_using_timer0(void);
 
-void trafficlight_using_timer1();
+void trafficlight_using_timer1(void);
 
-void trafficlight_using_timer0_using_interrupts();
+void trafficlight_using_timer0_using_interrupts(void);
 
-void trafficlight_using_timer0_using_interrupts_button();
+void trafficlight_using_timer0_using_interrupts_button(void);
 
 /*global variables */
 

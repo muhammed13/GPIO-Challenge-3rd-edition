@@ -43,9 +43,13 @@ typedef enum En_timer0Interrupt_t{
 }En_timer0Interrupt_t;
 
 typedef enum En_timer0frequency_t{
-	T0_FREQUENCY_62KHZ=0x01,T0_FREQUENCY_8KHZ=0x02,T0_FREQUENCY_967HZ=0x03,T0_FREQUENCY_244HZ=0x04,T0_FREQUENCY_61HZ=0x05
+	T0_FREQUENCY_62KHZ=0x01,T0_FREQUENCY_8KHZ=0x02,T0_FREQUENCY_1KHZ=0x03,T0_FREQUENCY_244HZ=0x04,T0_FREQUENCY_61HZ=0x05
 	/*T0_FREQUENCY_62.5KHZ , T0_FREQUENCY_7.812KHZ , T0_FREQUENCY_967.5HZ, T0_FREQUENCY_244.1HZ   ,T0_FREQUENCY_61HZ*/
 }En_timer0frequency_t;
+
+typedef enum En_timer0PhaseCorrectfrequency_t{
+	T0_PHASE_CORRECT_FREQUENCY_31KHZ=0x01,T0_PHASE_CORRECT_FREQUENCY_4KHZ=0x02,T0_PHASE_CORRECT_FREQUENCY_500HZ=0x03,T0_PHASE_CORRECT_FREQUENCY_122HZ=0x04,T0_PHASE_CORRECT_FREQUENCY_31HZ=0x05
+}En_timer0PhaseCorrectfrequency_t;
 
 
 
@@ -71,7 +75,9 @@ typedef enum En_timer1frequency_t{
 	/*T0_FREQUENCY_6.4KHZ , T0_FREQUENCY_800HZ ,   T0_FREQUENCY_100HZ,     T0_FREQUENCY_25HZ     ,T0_FREQUENCY_6.25HZ*/
 }En_timer1frequency_t;
 
-
+typedef enum En_timer1PhaseCorrectfrequency_t{
+	T1_PHASE_CORRECT_FREQUENCY_3KHZ=0x01,T1_PHASE_CORRECT_FREQUENCY_400HZ=0x02,T1_PHASE_CORRECT_FREQUENCY_50HZ=0x03,T1_PHASE_CORRECT_FREQUENCY_13HZ=0x04,T1_PHASE_CORRECT_FREQUENCY_3HZ=0x05
+}En_timer1PhaseCorrectfrequency_t;
 
 
 
@@ -147,10 +153,9 @@ void timer0DelayUs(uint32_t u32_delay_in_us);
  */
 void timer0SwPWM(uint8_t u8_dutyCycle,uint8_t u8_frequency);
 
+void timer0HwPWM(uint8_t u8_dutyCycle,uint8_t u8_frequency);
 
-
-
-
+void timer0HwPWM_PhaseCorrect(uint8_t u8_dutyCycle,uint8_t u8_frequency);
 
 
 
@@ -206,9 +211,9 @@ void timer1DelayUs(uint32_t u32_delay_in_us);
 void timer1SwPWM(uint8_t u8_dutyCycle,uint8_t u8_frequency);
 
 
+void timer1HwPWM(uint8_t u8_dutyCycle,uint8_t u8_frequency);
 
-
-
+void timer1HwPWM_PhaseCorrect(uint8_t u8_dutyCycle,uint8_t u8_frequency);
 /*===========================Timer2 Control===============================*/
 /**
  * Description:
@@ -318,6 +323,5 @@ void timer2SwPWM(uint8_t u8_dutyCycle,uint8_t u8_frequency);
 #define ICNC1 7	     // defines BIT7 in a TCCR1B register
 
 /*Global variables*/
-extern volatile uint8_t g8_on_time;
-extern volatile uint8_t g8_off_time;
+extern uint8_t g8_TCNT0_value_Swpwm_ISR;
 #endif /* TIMERS_H_ */

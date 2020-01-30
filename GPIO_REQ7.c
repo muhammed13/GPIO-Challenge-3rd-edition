@@ -1,5 +1,10 @@
 #include "GPIO_REQ7.h"
-void sevensegments()
+
+#define MAX_NUMBER 9
+#define SWITCHING_TIME 5
+#define NUMBER_OF_ITERATION_FOR_ONE_SEC 50
+
+void sevensegments(void)
 {
 	sevenSegInit(SEG_0);
 	sevenSegInit(SEG_1);

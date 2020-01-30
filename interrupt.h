@@ -81,11 +81,18 @@
 #define cli()  __asm__ __volatile__ ("cli" ::)
 
 
-/* global variables*/
-extern uint8_t g8_state;
-extern uint8_t g8_interrupt_zero_flag;
-extern uint8_t g8_gloabal_car_duty;
-
-/*functions*/
-void INT0_Init(void);
+/**************************************ENUMs**********************************/
+typedef enum EN_Edge_t{
+	LOW_LEVEL=0,
+	ANY_CHANGE=1,
+	FALLING_EDGE = 2,
+	RISIGING_EDGE = 3
+}EN_Edge_t;
+/************************************functions*******************************/
+void INT0_Init(EN_Edge_t);
+void INT1_Init(EN_Edge_t);
+void INT2_Init(EN_Edge_t);
+void INT0_DeInit(void);
+void INT1_DeInit(void);
+void INT2_DeInit(void);
 #endif /* INTERRUPT_H_ */
