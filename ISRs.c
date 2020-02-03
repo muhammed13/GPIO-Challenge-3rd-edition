@@ -8,8 +8,8 @@
 #include "ISRs.h"
 
 volatile uint8_t g8_gloabal_int0_flag=0;
-
-/****************this ISRs for testing*****************/
+volatile uint8_t u8_local_int0_flag=0;
+/****************************this ISRs for testing************************/
 /*
 ISR(INT0_vect)
 {
@@ -18,12 +18,14 @@ ISR(INT0_vect)
 	g8_gloabal_int0_flag=1;
 }
 */
+/***********************************************************************/
+
 /****************this ISRs for state machine using interrupt*****************/
 /*
 ISR(TIMER0_COMP_vect)
 {
 	static uint16_t u16_timer_tick=0;
-	if(u16_timer_tick==1000)
+	if(u16_timer_tick==1000 || u8_local_int0_flag==1)
 	{
 		switch(g8_state)
 		{
@@ -49,18 +51,20 @@ ISR(TIMER0_COMP_vect)
 		u16_timer_tick=0;
 	}
 	u16_timer_tick++;
+	u8_local_int0_flag=0;
 }
 
 ISR(INT0_vect)
 {
 	g8_gloabal_int0_flag=1;
+	u8_local_int0_flag=1;
 }
 */
 /*****************************************************************************/
 
 
-/****************************these ISRs for SWPWM****************************/
-
+/****************************these ISRs for TIMER0 SWPWM****************************/
+/*
 ISR(TIMER0_OVF_vect)
 {
 	gpioPinWrite(GPIOD, BIT4,BIT4);
@@ -73,18 +77,18 @@ ISR(TIMER0_COMP_vect)
 	gpioPinWrite(GPIOD, BIT4,LOW);
 	gpioPinWrite(GPIOD, BIT5,LOW);
 }
-
+*/
 /*****************************************************************************/
 
 
 /*******************************these ISRs for Ultrasonic sensor*******************************************/
-/*
+
 ISR(INT0_vect)
 {
 	g8_SwICU=TCNT0;
 	gpioPinDirection(GPIOB, BIT0, OUTPUT);
 	gpioPinWrite(GPIOB, BIT0,BIT0);
 }
-*/
+
 /*****************************************************************************/
 

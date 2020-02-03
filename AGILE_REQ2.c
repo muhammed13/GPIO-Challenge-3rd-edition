@@ -12,7 +12,7 @@
 void ultrasonic_sensor_start(void)
 {
 	uint8_t u8_obstacle_distance;
-	gpioPinDirection(LED_0_GPIO,LED_0_BIT | LED_1_BIT | LED_2_BIT | LED_3_BIT,
+	gpioPinDirection(GPIOB,LED_0_BIT | LED_1_BIT | LED_2_BIT | LED_3_BIT,
 			                    LED_0_BIT | LED_1_BIT | LED_2_BIT | LED_3_BIT);
 	US_init();
 	while(1)

@@ -71,7 +71,7 @@ int main(void)
 	//timer0Init(T0_NORMAL_MODE,T0_OC0_DIS,T0_PRESCALER_NO,6,0,T0_INTERRUPT_NORMAL);
 
 	//T0_PRESCALER_NO ==> 97HZ ... T0_PRESCALER_64 ==> 3.8HZ
-
+*/
     /*******timer1 hardware fast pwm test************/
 /*
 	gpioPinDirection(GPIOD, BIT5, OUTPUT);
@@ -102,12 +102,13 @@ int main(void)
 	timer0SwPWM(50,T0_FREQUENCY_61HZ);
 */
 	/*first car application test*/
-	car_application();
+	/*I have to apply the ISR*/
+	/*car_application();*/
 
 	/*US test*/
-	/*ultrasonic_sensor_start();*/
+	ultrasonic_sensor_start();
 
-	/*car application phase correct test*/
+	/***car application phase correct test***/
 	/*car_application_with_phase_correct();*/
 /*
 	while(1)
