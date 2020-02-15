@@ -152,24 +152,46 @@ void gpioPinWrite(uint8_t u8_port, uint8_t u8_pins, uint8_t u8_value)
 	switch(u8_port)
 	{
 	case 0:
+		if(u8_value == LOW)
+		{
 			PORTA_DATA &= ~(u8_pins);
-			PORTA_DATA |= u8_value;
-
+		}
+		else
+		{
+			PORTA_DATA |= u8_pins;
+		}
 		break;
 
 	case 1:
+		if(u8_value == LOW)
+		{
 			PORTB_DATA &= ~(u8_pins);
-			PORTB_DATA |= u8_value;
+		}
+		else
+		{
+			PORTB_DATA |= u8_pins;
+		}
 		break;
-
 	case 2:
+		if(u8_value == LOW)
+		{
 			PORTC_DATA &= ~(u8_pins);
-			PORTC_DATA |= u8_value;
+		}
+		else
+		{
+			PORTC_DATA |= u8_pins;
+		}
 		break;
 
 	case 3:
+		if(u8_value == LOW)
+		{
 			PORTD_DATA &= ~(u8_pins);
-			PORTD_DATA |= u8_value;
+		}
+		else
+		{
+			PORTD_DATA |= u8_pins;
+		}
 		break;
 
 	}
@@ -223,3 +245,33 @@ uint8_t gpioPinRead(uint8_t u8_port, uint8_t u8_pin)
 	}
 	return data;
 }
+
+
+/*void gpioPinWrite(uint8_t u8_port, uint8_t u8_pins, uint8_t u8_value)
+{
+	switch(u8_port)
+	{
+	case 0:
+			PORTA_DATA &= ~(u8_pins);
+			PORTA_DATA |= u8_value;
+
+		break;
+
+	case 1:
+			PORTB_DATA &= ~(u8_pins);
+			PORTB_DATA |= u8_value;
+		break;
+
+	case 2:
+			PORTC_DATA &= ~(u8_pins);
+			PORTC_DATA |= u8_value;
+		break;
+
+	case 3:
+			PORTD_DATA &= ~(u8_pins);
+			PORTD_DATA |= u8_value;
+		break;
+
+	}
+}
+*/

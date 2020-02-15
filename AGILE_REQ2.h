@@ -14,5 +14,6 @@
 /*************************functions*****************************/
 void ultrasonic_sensor_start(void);
 /****************************************************************/
+extern uint8_t g8_global_distance;
 
 #endif /* AGILE_REQ2_H_ */

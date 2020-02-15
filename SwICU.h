@@ -29,7 +29,7 @@ void SwICU_Disable(void);
 
 
 /************************global variables********************/
-extern volatile uint8_t g8_SwICU;
+extern volatile uint8_t g8_SwICU_value;
 /**************************************************************/
 
 #endif /* SWICU_H_ */

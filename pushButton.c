@@ -30,7 +30,7 @@ En_buttonStatus_t pushButtonGetStatus(En_buttonId_t en_butotn_id)
 			if(gpioPinRead(BTN_0_GPIO, BTN_0_BIT))
 			{
 				softwareDelayMs(30);
-				/*second check due to switch de-bouncing*/
+				/*30ms check due to switch de-bouncing*/
 				if(gpioPinRead(BTN_0_GPIO, BTN_0_BIT))
 				{
 					current_status=gpioPinRead(BTN_0_GPIO, BTN_0_BIT);
@@ -42,7 +42,7 @@ En_buttonStatus_t pushButtonGetStatus(En_buttonId_t en_butotn_id)
 			if(gpioPinRead(BTN_1_GPIO, BTN_1_BIT))
 			{
 				softwareDelayMs(30);
-				/*second check due to switch de-bouncing*/
+				/*30ms check due to switch de-bouncing*/
 				if(gpioPinRead(BTN_1_GPIO, BTN_1_BIT))
 				{
 					current_status=gpioPinRead(BTN_1_GPIO, BTN_1_BIT);
@@ -66,7 +66,7 @@ En_buttonStatus_t pushButtonGetStatus(En_buttonId_t en_butotn_id)
 			if(gpioPinRead(BTN_3_GPIO, BTN_3_BIT))
 			{
 				softwareDelayMs(30);
-				/*second check due to switch de-bouncing*/
+				/*30ms check due to switch de-bouncing*/
 				if(gpioPinRead(BTN_3_GPIO, BTN_3_BIT))
 				{
 					current_status=gpioPinRead(BTN_3_GPIO, BTN_3_BIT);
@@ -78,7 +78,7 @@ En_buttonStatus_t pushButtonGetStatus(En_buttonId_t en_butotn_id)
 			if(gpioPinRead(GPIOD, BIT2))
 			{
 				softwareDelayMs(30);
-				/*second check due to switch de-bouncing*/
+				/*30ms check due to switch de-bouncing*/
 				if(gpioPinRead(GPIOD, BIT2))
 				{
 					current_status=gpioPinRead(GPIOD, BIT2);

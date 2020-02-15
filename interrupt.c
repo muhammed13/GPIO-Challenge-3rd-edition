@@ -43,7 +43,6 @@ void INT0_DeInit(void)
 	cli();                              /*Disable interrupts by clearing I-bit*/
 	GICR  &= ~(1<<INT0);                 /* Disable external interrupt pin INT0*/
 	MCUCR &= ~(1<<ISC00) & ~(1<<ISC01);
-	sei();                              /*Enable interrupts by setting I-bit*/
 }
 
 /****************************INT1*******************************************/

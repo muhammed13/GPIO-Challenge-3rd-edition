@@ -9,7 +9,6 @@
 #define GPIO_H_
 
 #include "std_types.h"
-#include "gpio.h"
 #include "registers.h"
 
 

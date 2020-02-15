@@ -117,7 +117,7 @@ void trafficlight_using_timer0_using_interrupts(void)
 
 void trafficlight_using_timer0_using_interrupts_button(void)
 {
-	INT0_Init(RISIGING_EDGE);
+	INT2_Init(RISIGING_EDGE);
 	g8_gloabal_int0_flag=0;
 	Led_Init(LED_1);
 	Led_Init(LED_2);

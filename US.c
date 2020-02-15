@@ -22,15 +22,18 @@
 /********************************functions********************************/
 void US_init(void)
 {
-	gpioPinDirection(GPIOA, BIT0,OUTPUT);
+	gpioPinDirection(GPIOA, US_TRIGGER_BIT,OUTPUT);
+	gpioPinWrite(GPIOA, US_TRIGGER_BIT,US_TRIGGER_BIT); /*enable pull-up resistor*/
 	SwICU_Init(SwICU_EdgeRisiging);
 }
 
 void US_triger(void)
 {
+	INT0_DeInit();
 	gpioPinWrite(US_TRIGGER_GPIO,US_TRIGGER_BIT,US_TRIGGER_BIT);
-	softwareDelayMs(10);
+	softwareDelayMs(1);
 	gpioPinWrite(US_TRIGGER_GPIO,US_TRIGGER_BIT,LOW);
+	INT0_Init(RISIGING_EDGE);
 }
 
 void US_start(void)
@@ -45,10 +48,11 @@ void US_stop(void)
 
 uint8_t US_get_reading(void)
 {
-	/*1 cm = 29.41 us    with 64 pre 7.3 ticks
-	 * 15 cm= 441.17 us  with 64 pre 110 ticks
-	 * 1 m = 2941.1 us   with 1024 pre 45.9 ticks
-	 * 4 m = 11764.7 us  with 1024 pre 183.8 ticks
+	/*time=distance/speed => time(s)=1(cm)/100*340 */
+	/*1 cm = 29.41 us *2 =60us    with 64 pre 15 ticks
+	 * 15 cm= 441.17 us *2  with 64 pre 110 ticks
+	 * 1 m = 2941.1 us  *2  with 1024 pre 45.9 ticks
+	 * 4 m = 11764.7 us *2  with 1024 pre 183.8 ticks
 	 * 15 m =44117.6 us */
 
 	volatile uint8_t u8_timer_ticks;
@@ -56,7 +60,7 @@ uint8_t US_get_reading(void)
 	while(g8_gloabal_int0_flag==DOWN);
 	g8_gloabal_int0_flag=DOWN;
 	SwICU_Read(&u8_timer_ticks);
-	u8_distance=u8_timer_ticks/7;
+	u8_distance=(uint8_t)(u8_timer_ticks/15);
 	return u8_distance;
 }
 

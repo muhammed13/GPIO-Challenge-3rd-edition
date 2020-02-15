@@ -2,17 +2,17 @@
 #define REGISTERS_H_
 #include "std_types.h"
 
-/*
+/********************************************************
  * General Registers
- */
+ *******************************************************/
 #define MCUCR	*((reg_type8_t)(0X55))
 #define MCUCSR	*((reg_type8_t)(0X54))
 #define GICR	*((reg_type8_t)(0X5B))
 #define GIFR	*((reg_type8_t)(0X5A))
 
-/*
+/********************************************************
  * PORTx registers
- */
+ *******************************************************/
 
 #define PORTA_DATA 	*((reg_type8_t)(0X3B))
 #define PORTA_DIR  	*((reg_type8_t)(0X3A))
@@ -32,25 +32,25 @@
 #define PORTD_PIN	*((reg_type8_t)(0X30))
 
 
-/*
+/*********************************************************
  * General Timer registers
- */
+ ********************************************************/
 #define TIMSK		*((reg_type8_t)(0X59))
 #define TIFR		*((reg_type8_t)(0X58))
 
 
-/*
+/*********************************************************
  * Timer 0 Registers
- */
+ *********************************************************/
 
 #define TCCR0		*((reg_type8_t)(0X53))
 #define TCNT0		*((reg_type8_t)(0X52))
 #define OCR0		*((reg_type8_t)(0X5C))
 
 
-/*
+/**********************************************************
  * Timer 1 Registers
- */
+ *********************************************************/
 
 #define TCCR1A		*((reg_type8_t)(0X4F))
 #define TCCR1B		*((reg_type8_t)(0X4E))
@@ -69,17 +69,17 @@
 #define ICR1		*((reg_type16_t)(0X46))
 
 
-/*
+/**********************************************************
  * Timer 2 Registers
- */
+ **********************************************************/
 #define TCCR2		*((reg_type8_t)(0X45))
 #define TCNT2		*((reg_type8_t)(0X44))
 #define OCR2		*((reg_type8_t)(0X43))
 
 
-/*
+/************************************************************
  * interrupts vector table
- */
+ ***********************************************************/
 #define RESET_ *((reg_type8_t)(0X000))
 #define INT0_ *((reg_type8_t)(0X002))
 #define INT1_ *((reg_type8_t)(0X004))
@@ -102,6 +102,22 @@
 #define TWI_ *((reg_type8_t)(0X026))
 #define SPM_RDY_ *((reg_type8_t)(0X028))
 
+/************************************************************
+ * UART registers
+ ***********************************************************/
+#define UCSRA *((reg_type8_t)(0X2B))
+#define UCSRB *((reg_type8_t)(0X2A))
+#define UBRRL *((reg_type8_t)(0X29))
+#define UCSRC *((reg_type8_t)(0X40))
+#define UBRRH *((reg_type8_t)(0X40))
+#define UDR *((reg_type8_t)(0X2C))
+
+/************************************************************
+ * SPI registers
+ ***********************************************************/
+#define  SPCR  *((reg_type8_t)0x2D)
+#define  SPSR  *((reg_type8_t)0x2E)
+#define  SPDR  *((reg_type8_t)0x2F)
 
 #endif /* REGISTERS_H_ */
 

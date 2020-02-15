@@ -9,7 +9,14 @@
 #include "led.h"
 #include "AGILE_REQ2.h"
 #include "AGILE_REQ3.h"
+#include "UART.h"
+#include "UART_Sender.h"
+#include "UART_Receiver.h"
+#include "UART_SPI_ApplicationMicro1.h"
+#include "UART_SPI_ApplicationMicro2.h"
+#include "SPI_Driver.h"
 
+#define NULL_PTR ((void*)0)
 int main(void)
 {
 	/*REQ7*/
@@ -106,7 +113,8 @@ int main(void)
 	/*car_application();*/
 
 	/*US test*/
-	ultrasonic_sensor_start();
+	//ultrasonic_sensor_start();
+
 
 	/***car application phase correct test***/
 	/*car_application_with_phase_correct();*/
@@ -130,10 +138,122 @@ int main(void)
 	}
 
 */
+
+	/*
+	gpioPinDirection(GPIOD,BIT2,INPUT);
+	gpioPinDirection(GPIOA,BIT0,OUTPUT);
+	INT0_Init(3);
+	timer0Init(T0_NORMAL_MODE,T0_OC0_DIS,T0_PRESCALER_64,0,0,T0_POLLING);
 	while(1)
 	{
+		gpioPinWrite(US_TRIGGER_GPIO,US_TRIGGER_BIT,US_TRIGGER_BIT);
+		softwareDelayMs(1);
+		gpioPinWrite(US_TRIGGER_GPIO,US_TRIGGER_BIT,LOW);
+		softwareDelayMs(1);
+	}
+	*/
+
+
+	/*******************UART test***************************/
+	/*
+	UART_Config_Structure uart_initialization_structure;
+
+	uart_initialization_structure.Char_Size=USART_8_Bit_CHAR;
+	uart_initialization_structure.Clk_Polarity_Mode=TX_RISING_RX_FALLING;
+	uart_initialization_structure.Speed_Mode=USART_DOUBLE_SPEED;
+	uart_initialization_structure.Parity_Mode=USART_NO_PARITY;
+	uart_initialization_structure.Stop_Bit_Mode=USART_1_STOPBIT;
+	uart_initialization_structure.Receive_Mode=USART_RECIEVE_ENABLE;
+	uart_initialization_structure.Transmit_Mode=USART_TRANSMIT_ENABLE;
+	uart_initialization_structure.Double_Speed_Baud_Rate=BAUD9600;
+
+
+	UART_init(&uart_initialization_structure);
+	uint8_t Str[20];
+	uint8_t data;
+	while(1)
+	{
+		data = UART_recieveByte(); //Receive Byte from Terminal1
+		UART_sendByte(data); //Resend the received byte to Terminal2
+	}
+	*/
+
+
+	/*************receiver************************/
+/*
+	gpioPortDirection(GPIOB,OUTPUT);
+	gpioPortWrite(GPIOB,LOW);
+	uint8_t num=0;
+
+	UART_Config_Structure uart_initialization_structure;
+
+	uart_initialization_structure.Char_Size=USART_8_Bit_CHAR;
+	uart_initialization_structure.Clk_Polarity_Mode=TX_RISING_RX_FALLING;
+	uart_initialization_structure.Speed_Mode=USART_DOUBLE_SPEED;
+	uart_initialization_structure.Parity_Mode=USART_NO_PARITY;
+	uart_initialization_structure.Stop_Bit_Mode=USART_1_STOPBIT;
+	uart_initialization_structure.Receive_Mode=USART_RECIEVE_ENABLE;
+	uart_initialization_structure.Transmit_Mode=USART_TRANSMIT_ENABLE;
+	uart_initialization_structure.Double_Speed_Baud_Rate=BAUD9600;
+
+
+	UART_init(&uart_initialization_structure);
+	while(1)
+	{
+		num=UART_recieveByte();
+		gpioPortWrite(GPIOB,(num<<4));
+		softwareDelayMs(500);
 
 	}
+*/
+
+
+	/**************sender*****************************/
+
+	/*
+	uint8_t num=0;
+	UART_Config_Structure uart_initialization_structure;
+
+	uart_initialization_structure.Char_Size=USART_8_Bit_CHAR;
+	uart_initialization_structure.Clk_Polarity_Mode=TX_RISING_RX_FALLING;
+	uart_initialization_structure.Speed_Mode=USART_DOUBLE_SPEED;
+	uart_initialization_structure.Parity_Mode=USART_NO_PARITY;
+	uart_initialization_structure.Stop_Bit_Mode=USART_1_STOPBIT;
+	uart_initialization_structure.Receive_Mode=USART_RECIEVE_ENABLE;
+	uart_initialization_structure.Transmit_Mode=USART_TRANSMIT_ENABLE;
+	uart_initialization_structure.Double_Speed_Baud_Rate=BAUD9600;
+
+
+	UART_init(&uart_initialization_structure);
+	softwareDelayMs(3000);
+	while(1)
+	{
+		 UART_sendByte(num);
+		num++;
+		if(num==15)
+		{
+			num=0;
+		}
+		softwareDelayMs(500);
+	}
+*/
+
+	/*UART test*/
+	//UART_Sender_func();
+	//UART_Receiver_func();
+
+
+	/*SPI test*/
+    //SPI_receiver_func();
+	//SPI_sender_test();
+
+
+	/*UART_SPI_APP_MICRO1*/
+	//Micro_OneApplication();
+
+	Micro_TwoApplication();
+
+
 	return 0;
 
 }
